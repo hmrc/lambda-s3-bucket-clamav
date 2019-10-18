@@ -14,17 +14,15 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-lambda_output_file=/opt/app/build/lambda.zip
+lambda_output_file=/opt/app/build/$1
 
 set -e
 
 yum update -y
-yum install -y cpio python2-pip yum-utils zip
+yum install -y cpio python2-pip yum-utils zip openssl
 yum install -y https://dl.fedoraproject.org/pub/epel/epel-release-latest-7.noarch.rpm
-pip install --no-cache-dir virtualenv
-virtualenv env
-. env/bin/activate
-pip install --no-cache-dir -r requirements.txt
+pip install pipenv
+pipenv install
 
 pushd /tmp
 yumdownloader -x \*i686 --archlist=x86_64 clamav clamav-lib clamav-update json-c pcre2
@@ -40,5 +38,12 @@ echo "DatabaseMirror database.clamav.net" > bin/freshclam.conf
 
 mkdir -p build
 zip -r9 $lambda_output_file *.py bin
-cd env/lib/python2.7/site-packages
+VENV=$(pipenv --venv 2>&1)
+LIB_PATH="$VENV/lib/*/site-packages"
+echo "Lib Path: $LIB_PATH"
+cd $LIB_PATH
 zip -r9 $lambda_output_file *
+
+#Create a sum file
+
+openssl dgst -sha256 -binary $lambda_output_file | openssl enc -base64 > $lambda_output_file.base64sha256
