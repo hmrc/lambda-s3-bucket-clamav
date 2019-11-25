@@ -38,7 +38,7 @@ build: clean
 	docker run --rm -i \
 		-v $(current_dir):$(container_dir) \
 		amazonlinux:$(AMZ_LINUX_VERSION) \
-		chown -R $(shell id -u):$(shell id -g) $(container_dir)/build $(container_dir)/env $(container_dir)/bin
+		chown -R $(shell id -u):$(shell id -g) $(container_dir)/build $(container_dir)/bin
 
 push-s3:
 	@aws s3 cp target/$(ARTIFACT) s3://$(S3_BUCKET)/$(ARTIFACT) --acl=bucket-owner-full-control
