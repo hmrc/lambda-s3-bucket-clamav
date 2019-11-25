@@ -31,11 +31,11 @@ clean:  ## Clean build artifacts
 
 .PHONY: build 
 build: clean  
-	docker run --rm -ti \
+	docker run --rm -i \
 		-v $(current_dir):$(container_dir) \
 		amazonlinux:$(AMZ_LINUX_VERSION) \
 		/bin/bash -c "cd $(container_dir) && ./build_lambda.sh $(ARTIFACT)"
-	docker run --rm -ti \
+	docker run --rm -i \
 		-v $(current_dir):$(container_dir) \
 		amazonlinux:$(AMZ_LINUX_VERSION) \
 		chown -R $(shell id -u):$(shell id -g) $(container_dir)/build $(container_dir)/env $(container_dir)/bin
