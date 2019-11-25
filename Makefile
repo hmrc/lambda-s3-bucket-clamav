@@ -41,8 +41,8 @@ build: clean
 		chown -R $(shell id -u):$(shell id -g) $(container_dir)/build $(container_dir)/bin
 
 push-s3:
-	@aws s3 cp target/$(ARTIFACT) s3://$(S3_BUCKET)/$(ARTIFACT) --acl=bucket-owner-full-control
-	@aws s3 cp target/$(ARTIFACT).base64sha256 s3://$(S3_BUCKET)/$(ARTIFACT).base64sha256 --acl=bucket-owner-full-control --content-type=text/plain
+	@aws s3 cp build/$(ARTIFACT) s3://$(S3_BUCKET)/$(ARTIFACT) --acl=bucket-owner-full-control
+	@aws s3 cp build/$(ARTIFACT).base64sha256 s3://$(S3_BUCKET)/$(ARTIFACT).base64sha256 --acl=bucket-owner-full-control --content-type=text/plain
 
 
 test-dependencies:
