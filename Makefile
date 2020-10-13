@@ -14,7 +14,17 @@
 AMZ_LINUX_VERSION:=2
 current_dir := $(shell pwd)
 container_dir := /opt/app
-ARTIFACT := clamav-scanner-lambda.zip
+LAMBDA_NAME := clamav-scanner
+BUCKET_NAME := txm-lambda-functions-integration
+LATEST_TAG := $(shell git tag --sort=v:refname \
+        | grep -E "^v[0-9]+\.[0-9]+\.[0-9]+" | tail -1 )
+TAG_MAJOR_NUMBER := $(shell echo $(LATEST_TAG) | cut -f 1 -d '.' )
+TAG_RELEASE_NUMBER := $(shell echo $(LATEST_TAG) | cut -f 2 -d '.' )
+TAG_PATCH_NUMBER := $(shell echo $(LATEST_TAG) | cut -f 3 -d '.' )
+LAMBDA_VERSION := $(shell git tag --sort=v:refname \
+        | grep -E "^v[0-9]+\.[0-9]+\.[0-9]+" | tail -1 )
+LAMBDA_VERSION := v1.0.0
+LAMBDA_FILE := ${LAMBDA_NAME}.${LAMBDA_VERSION}.zip
 
 .PHONY: help
 help:  ## Print the help documentation
@@ -34,15 +44,15 @@ build: clean
 	docker run --rm -i \
 		-v $(current_dir):$(container_dir) \
 		amazonlinux:$(AMZ_LINUX_VERSION) \
-		/bin/bash -c "cd $(container_dir) && ./build_lambda.sh $(ARTIFACT)"
+		/bin/bash -c "cd $(container_dir) && ./build_lambda.sh $(LAMBDA_FILE)"
 	docker run --rm -i \
 		-v $(current_dir):$(container_dir) \
 		amazonlinux:$(AMZ_LINUX_VERSION) \
 		chown -R $(shell id -u):$(shell id -g) $(container_dir)/build $(container_dir)/bin
 
 push-s3:
-	@aws s3 cp build/$(ARTIFACT) s3://$(S3_BUCKET)/$(ARTIFACT) --acl=bucket-owner-full-control
-	@aws s3 cp build/$(ARTIFACT).base64sha256 s3://$(S3_BUCKET)/$(ARTIFACT).base64sha256 --acl=bucket-owner-full-control --content-type=text/plain
+	@aws s3 cp build/$(LAMBDA_FILE) s3://$(BUCKET_NAME)/${LAMBDA_NAME}/$(LAMBDA_FILE) --acl=bucket-owner-full-control
+	@aws s3 cp build/$(LAMBDA_FILE).base64sha256 s3://$(BUCKET_NAME)/${LAMBDA_NAME}/$(LAMBDA_FILE).base64sha256 --acl=bucket-owner-full-control --content-type=text/plain
 
 
 test-dependencies:

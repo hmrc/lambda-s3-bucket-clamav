@@ -20,7 +20,7 @@ pipeline {
     stage('Upload to s3') {
       steps {
         sh("""
-           make push-s3 S3_BUCKET=txm-lambda-functions-tools
+           make push-s3 BUCKET_NAME=txm-lambda-functions-integration
            """)
       }
     }

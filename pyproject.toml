@@ -1,0 +1,18 @@
+[tool.poetry]
+name = "lambda-s3-bucket-clamav"
+version = "0.1.0"
+description = ""
+authors = ["Your Name <you@example.com>"]
+
+[tool.poetry.dependencies]
+python = "^2.7"
+requests = "^2.24.0"
+simplejson = "^3.17.0"
+
+[tool.poetry.dev-dependencies]
+boto3 = "^1.14.20"
+moto = "^1.3.14"
+
+[build-system]
+requires = ["poetry>=0.12"]
+build-backend = "poetry.masonry.api"
