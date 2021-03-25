@@ -18,6 +18,7 @@ idna = "==2.8"
 requests = "==2.21"
 simplejson = "==3.16"
 urllib3 = "==1.24.1"
+rsa = "==4.1.1"
 
 [requires]
 python_version = "2.7"
