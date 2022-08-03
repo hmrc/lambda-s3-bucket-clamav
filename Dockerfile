@@ -20,7 +20,7 @@ RUN which python
 RUN python --version
 
 RUN which pip
-RUN pip install pipenv
+RUN pip install pipenv backports.weakref backports.functools_lru_cache
 RUN which pipenv
 #pipenv run pip install -r <(pipenv lock -r) --target ${LAMBDA_TASK_ROOT}
 RUN pipenv lock --keep-outdated --requirements > requirements.txt
