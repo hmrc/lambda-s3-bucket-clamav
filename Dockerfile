@@ -13,14 +13,15 @@ COPY Pipfile.lock ${LAMBDA_TASK_ROOT}
 
 RUN yum updateinfo -y && yum update -y
 
-RUN yum install -y links pcre2 yum-utils zip openssl binutils python27-pip python27-setuptools
+RUN yum install -y links pcre2 yum-utils zip openssl binutils python27-pip python27-setuptools python27-backports.x86_64
 RUN yum install -y https://dl.fedoraproject.org/pub/epel/epel-release-latest-7.noarch.rpm
 
 RUN which python
 RUN python --version
 
 RUN which pip
-RUN pip install pipenv backports.weakref backports.functools_lru_cache
+RUN pip install --upgrade setuptools pip pipenv==2021.5.29 
+    #backports.weakref backports.functools_lru_cache backports.shutil_get_terminal_size
 RUN which pipenv
 #pipenv run pip install -r <(pipenv lock -r) --target ${LAMBDA_TASK_ROOT}
 RUN pipenv lock --keep-outdated --requirements > requirements.txt
